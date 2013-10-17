@@ -1,25 +1,17 @@
-/*!
- * contentloaded.js
+/*
  *
- * Author: Diego Perini (diego.perini at gmail.com)
+ * Original Author: Diego Perini (diego.perini at gmail.com)
  * Summary: cross-browser wrapper for DOMContentLoaded
- * Updated: 20101020
- * License: MIT
- * Version: 1.2
- *
- * URL:
- * http://javascript.nwbox.com/ContentLoaded/
- * http://javascript.nwbox.com/ContentLoaded/MIT-LICENSE
  *
  */
 
-// @win window reference
-// @fn function reference
-function contentLoaded(win, fn) {
+function contentLoaded(fn) {
 
-	var done = false, top = true,
-
-	doc = win.document, root = doc.documentElement,
+	var done = false,
+		top = true,
+		win = window,
+		doc = document,
+		root = doc.documentElement,
 
 	add = doc.addEventListener ? 'addEventListener' : 'attachEvent',
 	rem = doc.addEventListener ? 'removeEventListener' : 'detachEvent',
@@ -48,3 +40,5 @@ function contentLoaded(win, fn) {
 	}
 
 }
+
+module.exports = contentLoaded;
