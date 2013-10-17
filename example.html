@@ -1,0 +1,27 @@
+<html>
+  <head>
+    <title>domready</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        padding: 50px;
+        font-size: 2.5em;
+        font-weight: bold;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <div id='state'>Not ready yet...</div>
+    <script src="build/build.js"></script>
+    <script>
+      require('domready')(function(a, b) {
+        document.getElementById('state').innerHTML = 'Ready now!';
+      });
+    </script>
+  </body>
+</html>
