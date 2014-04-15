@@ -1,3 +1,5 @@
+all: lint build
+
 lint:
 	jshint index.js
 

@@ -5,7 +5,9 @@
   "description": "cross browser DOM ready / content loaded fallback",
   "version": "0.1.0",
   "keywords": [],
-  "dependencies": {},
+  "dependencies": {
+    "component/event": "*"
+  },
   "development": {},
   "license": "MIT",
   "main": "index.js",
