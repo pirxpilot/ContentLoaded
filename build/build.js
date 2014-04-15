@@ -199,6 +199,43 @@ require.relative = function(parent) {
 
   return localRequire;
 };
+require.register("component-event/index.js", Function("exports, require, module",
+"var bind = window.addEventListener ? 'addEventListener' : 'attachEvent',\n\
+    unbind = window.removeEventListener ? 'removeEventListener' : 'detachEvent',\n\
+    prefix = bind !== 'addEventListener' ? 'on' : '';\n\
+\n\
+/**\n\
+ * Bind `el` event `type` to `fn`.\n\
+ *\n\
+ * @param {Element} el\n\
+ * @param {String} type\n\
+ * @param {Function} fn\n\
+ * @param {Boolean} capture\n\
+ * @return {Function}\n\
+ * @api public\n\
+ */\n\
+\n\
+exports.bind = function(el, type, fn, capture){\n\
+  el[bind](prefix + type, fn, capture || false);\n\
+  return fn;\n\
+};\n\
+\n\
+/**\n\
+ * Unbind `el` event `type`'s callback `fn`.\n\
+ *\n\
+ * @param {Element} el\n\
+ * @param {String} type\n\
+ * @param {Function} fn\n\
+ * @param {Boolean} capture\n\
+ * @return {Function}\n\
+ * @api public\n\
+ */\n\
+\n\
+exports.unbind = function(el, type, fn, capture){\n\
+  el[unbind](prefix + type, fn, capture || false);\n\
+  return fn;\n\
+};//@ sourceURL=component-event/index.js"
+));
 require.register("domready/index.js", Function("exports, require, module",
 "/*\n\
  *\n\
@@ -207,42 +244,55 @@ require.register("domready/index.js", Function("exports, require, module",
  *\n\
  */\n\
 \n\
-function contentLoaded(fn) {\n\
+var events = require('event');\n\
 \n\
-\tvar done = false,\n\
-\t\ttop = true,\n\
-\t\twin = window,\n\
-\t\tdoc = document,\n\
-\t\troot = doc.documentElement,\n\
+module.exports = domready;\n\
 \n\
-\tadd = doc.addEventListener ? 'addEventListener' : 'attachEvent',\n\
-\trem = doc.addEventListener ? 'removeEventListener' : 'detachEvent',\n\
-\tpre = doc.addEventListener ? '' : 'on',\n\
 \n\
-\tinit = function(e) {\n\
-\t\tif (e.type == 'readystatechange' && doc.readyState != 'complete') return;\n\
-\t\t(e.type == 'load' ? win : doc)[rem](pre + e.type, init, false);\n\
-\t\tif (!done && (done = true)) fn.call(win, e.type || e);\n\
-\t},\n\
-\n\
-\tpoll = function() {\n\
-\t\ttry { root.doScroll('left'); } catch(e) { setTimeout(poll, 50); return; }\n\
-\t\tinit('poll');\n\
-\t};\n\
-\n\
-\tif (doc.readyState == 'complete') fn.call(win, 'lazy');\n\
-\telse {\n\
-\t\tif (doc.createEventObject && root.doScroll) {\n\
-\t\t\ttry { top = !win.frameElement; } catch(e) { }\n\
-\t\t\tif (top) poll();\n\
-\t\t}\n\
-\t\tdoc[add](pre + 'DOMContentLoaded', init, false);\n\
-\t\tdoc[add](pre + 'readystatechange', init, false);\n\
-\t\twin[add](pre + 'load', init, false);\n\
-\t}\n\
-\n\
+function bind(init) {\n\
+\tevents.bind(document, 'DOMContentLoaded', init);\n\
+\tevents.bind(document, 'readystatechange', init);\n\
+\tevents.bind(window, 'load', init);\n\
 }\n\
 \n\
-module.exports = contentLoaded;//@ sourceURL=domready/index.js"
+function unbind(init) {\n\
+\tevents.unbind(document, 'DOMContentLoaded', init);\n\
+\tevents.unbind(document, 'readystatechange', init);\n\
+\tevents.unbind(window, 'load', init);\n\
+}\n\
+\n\
+function domready(fn) {\n\
+\tvar done = false,\n\
+\t\ttop = true,\n\
+\t\troot = document.documentElement;\n\
+\n\
+\tfunction init(e) {\n\
+\t\tif (e.type == 'readystatechange' && document.readyState != 'complete') return;\n\
+\t\tunbind(init);\n\
+\t\tif (!done) {\n\
+\t\t\tdone = true;\n\
+\t\t\tfn(e.type || e);\n\
+\t\t}\n\
+\t}\n\
+\n\
+\tfunction poll() {\n\
+\t\ttry { root.doScroll('left'); } catch(e) { setTimeout(poll, 50); return; }\n\
+\t\tinit('poll');\n\
+\t}\n\
+\n\
+\tif (done || document.readyState == 'complete') {\n\
+\t\treturn fn('lazy');\n\
+\t}\n\
+\n\
+\tif (document.createEventObject && root.doScroll) {\n\
+\t\ttry { top = !window.frameElement; } catch(e) { }\n\
+\t\tif (top) poll();\n\
+\t}\n\
+\tbind(init);\n\
+}\n\
+//@ sourceURL=domready/index.js"
 ));
+require.alias("component-event/index.js", "domready/deps/event/index.js");
+require.alias("component-event/index.js", "event/index.js");
+
 require.alias("domready/index.js", "domready/index.js");

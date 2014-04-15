@@ -14,14 +14,22 @@
         font-style: italic;
       }
     </style>
+    <script src="build/build.js"></script>
+    <script>
+      require('domready')(function(reason) {
+        document.getElementById('state').innerHTML = 'Ready now! - Reason: ' + reason;
+      });
+    </script>
   </head>
   <body>
     <div id='state'>Not ready yet...</div>
-    <script src="build/build.js"></script>
+    <div id='state2'>Not ready yet...</div>
     <script>
-      require('domready')(function(a, b) {
-        document.getElementById('state').innerHTML = 'Ready now!';
-      });
+      setTimeout(function() {
+        require('domready')(function(reason) {
+          document.getElementById('state2').innerHTML = 'Ready now! - Reason: ' + reason;
+        });
+      }, 1000);
     </script>
   </body>
 </html>
