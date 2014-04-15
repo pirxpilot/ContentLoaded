@@ -3,7 +3,7 @@
   "repo": "pirxpilot/domready",
   "demo": "http://pirxpilot.github.io/domready",
   "description": "cross browser DOM ready / content loaded fallback",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "keywords": [],
   "dependencies": {
     "component/event": "*"
